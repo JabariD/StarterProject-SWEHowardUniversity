@@ -20,6 +20,7 @@ class BoggleGame extends Component {
           board:  [[]],
           dictionaryForBoard: [],
           userGuess: "",
+          points: 0,
         };
     }
 
@@ -57,7 +58,7 @@ class BoggleGame extends Component {
 
     // User submitted word, let's try to update the state of the game
     submitWord = () => {
-        const { userGuess, foundWords, dictionaryForBoard } = this.state;
+        const { userGuess, foundWords, dictionaryForBoard, points } = this.state;
 
         if (userGuess === "") {
             console.log("Cannot add empty word.");
@@ -65,7 +66,22 @@ class BoggleGame extends Component {
             this.updateOverlay(true);
         } 
         else if (dictionaryForBoard.includes(userGuess) && userGuess.length > 2) {
+            // found word
             this.setState({foundWords: [userGuess, ...foundWords]})
+
+            // update points
+            const lengthOfWord = userGuess.length;
+            if (lengthOfWord < 5) {
+                this.setState({points: points + 1});
+            } else if (lengthOfWord === 5) {
+                this.setState({points: points + 2});
+            } else if (lengthOfWord === 6) {
+                this.setState({points: points + 3});
+            } else if (lengthOfWord === 7) {
+                this.setState({points: points + 5});
+            } else {
+                this.setState({points: points + 11});
+            }
         } else {
             console.log("Could not add for some reason!");
         }
@@ -82,11 +98,12 @@ class BoggleGame extends Component {
                     </div>
                     <Button text={"Stop"} page={""} setCurrentRoute={this.updateGameState}/><br></br>
                     <Timer updateGameState={this.updateGameState}/>
+                    <h5>{this.state.points} points</h5>
                     <div>
                         <Board board={this.state.board}/>
+                        <TakeUserInput updateUserGuess={this.updateUserGuess} submitWord={this.submitWord}/>
                         <FoundWords foundWords={this.state.foundWords}/>
                     </div>
-                    <TakeUserInput updateUserGuess={this.updateUserGuess} submitWord={this.submitWord}/>
                     
                 </div>
             )
@@ -96,7 +113,7 @@ class BoggleGame extends Component {
                     <h1>Done!</h1>
                     <Button text={"Play again?"} page={"notReady"} setCurrentRoute={this.props.setCurrentRoute}/>
                     <br></br>
-
+                    <h5>{this.state.points} points</h5>
                     <div style={endGameStyle}>
                         <FoundWords foundWords={this.state.dictionaryForBoard}/>
                         <Board board={this.state.board}/>
