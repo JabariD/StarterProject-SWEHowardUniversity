@@ -31,7 +31,7 @@ class App extends Component {
     super();
     this.state = {
       route: "home",
-      currentUser: {},
+      currentUser: null,
     };
   }
 
@@ -46,14 +46,24 @@ class App extends Component {
   }
 
   render() {
-    // home
-    if (this.state.route === "home") {
+    console.log(this.state.currentUser);
+    // user not logged in
+    if (this.state.route === "home" && !this.state.currentUser) {
+      return (
+        <div className="App">
+          <Login firebase={firebase} auth={auth} setLoggedIn={this.updateUser}/>
+          <h1>Let's Play Boggle!</h1>
+          <Button setCurrentRoute={this.setCurrentRoute} page={"notReady"} text={"Click to Start!"}/>
+        </div>
+      );
+    } 
+    // user logged in
+    else if (this.state.route === "home" && this.state.currentUser) {
       console.log(this.state.currentUser);
     return (
       <div className="App">
-        <p style={{float: "right"}}>Hello {this.state.currentUser.displayName}</p>
-        <Login firebase={firebase} auth={auth} setLoggedIn={this.updateUser}/>
-        <Logout auth={auth} setLoggedOut={this.updateUser}/>
+        <div><p style={{float: "right"}}>Hello {this.state.currentUser.displayName}</p></div>
+        <div><Logout auth={auth} setLoggedOut={this.updateUser}/></div>
         <h1>Let's Play Boggle!</h1>
         <Button setCurrentRoute={this.setCurrentRoute} page={"notReady"} text={"Click to Start!"}/>
       </div>

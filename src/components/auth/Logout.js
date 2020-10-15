@@ -2,7 +2,7 @@ import React from 'react'
 
 // Log the user out
 function signOut(auth, setLoggedOut) {
-    setLoggedOut({});
+    setLoggedOut(null);
     return auth.currentUser && auth.signOut();
 }
 
