@@ -7,7 +7,7 @@ import TakeUserInput from './boggle_game/TakeUserInput';
 
 // For init of boggle game
 import RandomGrid from '../boggle/board_generator.js'; // generate board
-import { getDoc } from './firestore/firestore'; // load challenge board
+import { getDoc, setDoc } from './firestore/firestore'; // load challenge board
 import findAllSolutions from '../boggle/boggle_solver'; // solves board
 
 import Button from './Button';
@@ -53,7 +53,6 @@ class BoggleGame extends Component {
                 board.push(boardRow);
             }
         }
-        console.log(board);
         this.setState({board: board})
         const dict = findAllSolutions(board, []);
         this.setState({dictionaryForBoard: dict});
@@ -66,9 +65,27 @@ class BoggleGame extends Component {
     }
 
     // Update game state
-    updateGameState = () => {
+    updateGameState = async() => {
         this.setState({state: "halted"});
-        this.getWordsNotFound();
+        this.getWordsNotFound(); // get words user did not find.
+
+        if (this.props.gameType.gameType !== "random") {
+            // check if this user beat a high score.
+            // user email and all current highscores (send a request to this challenge ID)
+            const challengeBoardObject = await getDoc(this.props.gameType.challenegID);
+            const highscoresForChallenge = challengeBoardObject.high_score; // <---- current array
+            
+            // find the minumum score and try to replace. sort, reverse, set
+            const minPoints = highscoresForChallenge[2].points; // only 3 appear in leaderboard and it is sorted in decesending order
+            if (minPoints < this.state.points) {
+                highscoresForChallenge.pop(); // delete min number of challenges
+                const data = {name: this.props.user.email, points: this.state.points}
+                highscoresForChallenge.push(data);
+                highscoresForChallenge.sort().reverse();
+                await setDoc(this.props.gameType.challenegID, highscoresForChallenge);
+            }
+        }
+
     }
 
     // Update overlay
@@ -80,6 +97,7 @@ class BoggleGame extends Component {
         }
     }
 
+    // Gets all words user did not find...
     getWordsNotFound = () => {
         const remainingwords = this.state.dictionaryForBoard.filter(word => !this.state.foundWords.includes(word) && word.length > 3).sort();
         this.setState({remainingWords: remainingwords});

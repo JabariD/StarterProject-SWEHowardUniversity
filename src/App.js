@@ -80,7 +80,7 @@ class App extends Component {
       } else {
         return (
           <div className="App">
-            <BoggleGame gameType={this.state.gameType} setCurrentRoute={this.setCurrentRoute} />
+            <BoggleGame gameType={this.state.gameType} setCurrentRoute={this.setCurrentRoute} user={this.state.currentUser} />
           </div>
         );
       }

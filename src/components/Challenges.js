@@ -32,7 +32,7 @@ export class Challenges extends Component {
                 {this.state.challenges.map( (challenge, index) => (
                     <li key={index}>
                         <label>
-                        {challenge.data.title} Challenge | High Score: {challenge.data.high_score[0]}
+                        {challenge.data.title} Challenge | High Score: {challenge.data.high_score[0].points} by {challenge.data.high_score[0].name}
                         <input type="radio" className="radio" name="board" data-id={challenge.id} onClick={this.props.updateGameType} />
                         </label>
                     </li>

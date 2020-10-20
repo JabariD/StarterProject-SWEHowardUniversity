@@ -29,4 +29,18 @@ async function getDoc(challengeID) {
     };
 }
 
-export { queryDB, getDoc };
+// Update a challenge
+async function setDoc(challengeID, data) {
+    try {
+        const challengeRef = firestore.collection("challenges").doc(challengeID);
+        
+        await challengeRef.update({high_score: data});
+
+        console.log("Document successfully written!");
+    } catch(e) {
+        console.error("Error writing document: ", e);
+    }
+
+}
+
+export { queryDB, getDoc, setDoc };
