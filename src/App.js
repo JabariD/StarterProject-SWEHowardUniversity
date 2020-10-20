@@ -5,33 +5,19 @@ import './App.css';
 /* Components */
 import Button from './components/Button.js';
 import Login from './components/auth/Login';
-import Logout from './components/auth/Logout'
-
-/* Firebase */
-import firebase from 'firebase/app'; // firebase core
-import 'firebase/firestore' // db
-import 'firebase/auth' // auth
-
-
-firebase.initializeApp({
-  apiKey: "AIzaSyAxiryizTTWs__o8DDnGC9bJFQXyaScD1A",
-  authDomain: "starterproject-swehu.firebaseapp.com",
-  databaseURL: "https://starterproject-swehu.firebaseio.com",
-  projectId: "starterproject-swehu",
-  storageBucket: "starterproject-swehu.appspot.com",
-  messagingSenderId: "853080662051",
-  appId: "1:853080662051:web:00f1497fc144995e50d196"
-});
-
-//const firestore = firebase.firestore();
-const auth = firebase.auth();
+import Logout from './components/auth/Logout';
+import Challenges from './components/Challenges.js';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      route: "home",
+      route: "home", // home or notReady or ready
       currentUser: null,
+      gameType: {
+        gameType: "random",
+        challenegID: "",
+      }, // {gameType: random or challenges | challengeID}
     };
   }
 
@@ -41,17 +27,28 @@ class App extends Component {
   }
 
   // Adds the update logged in state
-  updateUser = (state) => {
+  updateUser = async(state) => {
     this.setState({currentUser: state});
   }
 
+  // Determine if random or challenge grid.
+  updateGameType = (event) => {
+    // If user clicked on a challenge or random board we update the state accordingly!
+    if (event.target !== undefined) {
+      const dataId = event.target.getAttribute("data-id");
+      this.setState({gameType: {gameType: "challenge", challenegID: dataId} });
+    } else {
+      this.setState({gameType: {gameType: "random", challengeID: ""}});
+    }
+  }
+
   render() {
-    console.log(this.state.currentUser);
+    console.log(this.state.gameType);
     // user not logged in
     if (this.state.route === "home" && !this.state.currentUser) {
       return (
         <div className="App">
-          <Login firebase={firebase} auth={auth} setLoggedIn={this.updateUser}/>
+          <Login setLoggedIn={this.updateUser}/>
           <h1>Let's Play Boggle!</h1>
           <Button setCurrentRoute={this.setCurrentRoute} page={"notReady"} text={"Click to Start!"}/>
         </div>
@@ -59,15 +56,17 @@ class App extends Component {
     } 
     // user logged in
     else if (this.state.route === "home" && this.state.currentUser) {
-      console.log(this.state.currentUser);
-    return (
-      <div className="App">
-        <div><p style={{float: "right"}}>Hello {this.state.currentUser.displayName}</p></div>
-        <div><Logout auth={auth} setLoggedOut={this.updateUser}/></div>
-        <h1>Let's Play Boggle!</h1>
-        <Button setCurrentRoute={this.setCurrentRoute} page={"notReady"} text={"Click to Start!"}/>
-      </div>
-    );
+      return (
+        <div className="App">
+          <div><p style={{float: "right"}}>Hello {this.state.currentUser.displayName}</p></div>
+          <div><Logout setLoggedOut={this.updateUser}/></div>
+          <h1>Let's Play Boggle!</h1>
+          <Button setCurrentRoute={this.setCurrentRoute} page={"notReady"} text={"Click to Start!"}/>
+          <div>
+            <Challenges updateGameType={this.updateGameType}/>
+          </div>
+        </div>
+      );
 
     // user not ready to play a game
     } else {
@@ -81,7 +80,7 @@ class App extends Component {
       } else {
         return (
           <div className="App">
-            <BoggleGame setCurrentRoute={this.setCurrentRoute} />
+            <BoggleGame gameType={this.state.gameType} setCurrentRoute={this.setCurrentRoute} />
           </div>
         );
       }

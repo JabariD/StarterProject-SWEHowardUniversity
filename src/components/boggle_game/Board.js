@@ -4,13 +4,13 @@ import React from 'react'
 import Card from './Card.js';
 
 /* Generates the board */
-export default function Board({board}) {
+export default function Board({board, boardSize}) {
 
     return (
         <div>
            {board.map( (row) => {
                return row.map( (letter, letterIndex) => { 
-                return <Card key={letterIndex} letterIndex={letterIndex} letter={letter} /> } 
+                return <Card key={letterIndex} letterIndex={letterIndex} letter={letter} boardSize={boardSize}/> } 
             )  
                
            })}

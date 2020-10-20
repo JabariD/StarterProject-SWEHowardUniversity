@@ -7,6 +7,7 @@ import TakeUserInput from './boggle_game/TakeUserInput';
 
 // For init of boggle game
 import RandomGrid from '../boggle/board_generator.js'; // generate board
+import { getDoc } from './firestore/firestore'; // load challenge board
 import findAllSolutions from '../boggle/boggle_solver'; // solves board
 
 import Button from './Button';
@@ -30,8 +31,29 @@ class BoggleGame extends Component {
     }
 
     // Get board and dictionary for current board
-    getBoardAndDictionaryForBoard = () => {
-        const board = RandomGrid();
+    getBoardAndDictionaryForBoard = async() => {
+        // Check if board is random
+        let board = [];
+        if (this.props.gameType.gameType === "random") {
+            board = RandomGrid();
+        } else {
+            // load challenge board
+            const challengeBoardID = this.props.gameType.challenegID;
+            let boardObject = await getDoc(challengeBoardID);
+            for (let i = 0; i < boardObject.board.length; i++) {
+                let boardRow = [];
+
+                // grab respective values
+                const obj = boardObject.board[i];
+                const arr = obj[i];
+                console.log(arr);
+                for (let value of arr) {
+                    boardRow.push(value);
+                }
+                board.push(boardRow);
+            }
+        }
+        console.log(board);
         this.setState({board: board})
         const dict = findAllSolutions(board, []);
         this.setState({dictionaryForBoard: dict});
@@ -113,7 +135,7 @@ class BoggleGame extends Component {
                     <Timer updateGameState={this.updateGameState}/>
                     <h5>{this.state.points} points</h5>
                     <div>
-                        <Board board={this.state.board}/>
+                        <Board board={this.state.board} boardSize={this.state.board[0].length}/>
                         <p id="wordState"></p>
                         <TakeUserInput updateUserGuess={this.updateUserGuess} submitWord={this.submitWord}/>
                         <FoundWords foundWords={this.state.foundWords}/>
@@ -125,7 +147,7 @@ class BoggleGame extends Component {
             return (
                 <div>
                     <h1>Done!</h1>
-                    <Button text={"Play again?"} page={"notReady"} setCurrentRoute={this.props.setCurrentRoute}/>
+                    <Button text={"Play again?"} page={"home"} setCurrentRoute={this.props.setCurrentRoute}/>
                     <br></br>
                     <h5>{this.state.points} points</h5>
                     <div style={endGameStyle}>

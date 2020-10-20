@@ -1,11 +1,10 @@
 import React from 'react'
 
-export default function Card( {letter, letterIndex} ) {
-    if (letterIndex !== 4) {
+export default function Card( {letter, letterIndex, boardSize} ) {
+    if (letterIndex !== boardSize - 1) {
         return (
             <>  
                 <div style={card}>{letter}</div>
-                {/* {letter}; */}
             </>
         )
     } else 

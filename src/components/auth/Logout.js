@@ -1,15 +1,17 @@
 import React from 'react'
 
+import { auth } from '../../firebase';
+
 // Log the user out
-function signOut(auth, setLoggedOut) {
+function signOut(setLoggedOut) {
     setLoggedOut(null);
     return auth.currentUser && auth.signOut();
 }
 
-export default function Logout({ auth, setLoggedOut }) {
+export default function Logout({ setLoggedOut }) {
     return (
         <>
-            <button style={buttonStyle} onClick={() => signOut(auth, setLoggedOut)}>Sign Out!</button>
+            <button style={buttonStyle} onClick={() => signOut(setLoggedOut)}>Sign Out!</button>
         </>
     )
 }
