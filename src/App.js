@@ -16,7 +16,7 @@ class App extends Component {
       currentUser: null,
       gameType: {
         gameType: "random",
-        challenegID: "",
+        challengeID: "",
       }, // {gameType: random or challenges | challengeID}
     };
   }
@@ -36,7 +36,7 @@ class App extends Component {
     // If user clicked on a challenge or random board we update the state accordingly!
     if (event.target !== undefined) {
       const dataId = event.target.getAttribute("data-id");
-      this.setState({gameType: {gameType: "challenge", challenegID: dataId} });
+      this.setState({gameType: {gameType: "challenge", challengeID: dataId} });
     } else {
       this.setState({gameType: {gameType: "random", challengeID: ""}});
     }

@@ -38,7 +38,7 @@ class BoggleGame extends Component {
             board = RandomGrid();
         } else {
             // load challenge board
-            const challengeBoardID = this.props.gameType.challenegID;
+            const challengeBoardID = this.props.gameType.challengeID;
             let boardObject = await getDoc(challengeBoardID);
             for (let i = 0; i < boardObject.board.length; i++) {
                 let boardRow = [];
@@ -72,17 +72,17 @@ class BoggleGame extends Component {
         if (this.props.gameType.gameType !== "random") {
             // check if this user beat a high score.
             // user email and all current highscores (send a request to this challenge ID)
-            const challengeBoardObject = await getDoc(this.props.gameType.challenegID);
+            const challengeBoardObject = await getDoc(this.props.gameType.challengeID);
             const highscoresForChallenge = challengeBoardObject.high_score; // <---- current array
             
-            // find the minumum score and try to replace. sort, reverse, set
-            const minPoints = highscoresForChallenge[2].points; // only 3 appear in leaderboard and it is sorted in decesending order
+            // find the minimum score and try to replace. sort, reverse, set
+            const minPoints = highscoresForChallenge[2].points; // only 3 appear in leaderboard and it is sorted in descending order
             if (minPoints < this.state.points) {
                 highscoresForChallenge.pop(); // delete min number of challenges
                 const data = {name: this.props.user.email, points: this.state.points}
                 highscoresForChallenge.push(data);
                 highscoresForChallenge.sort().reverse();
-                await setDoc(this.props.gameType.challenegID, highscoresForChallenge);
+                await setDoc(this.props.gameType.challengeID, highscoresForChallenge);
             }
         }
 
