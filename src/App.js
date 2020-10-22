@@ -43,7 +43,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.gameType);
     // user not logged in
     if (this.state.route === "home" && !this.state.currentUser) {
       return (
@@ -63,7 +62,7 @@ class App extends Component {
           <h1>Let's Play Boggle!</h1>
           <Button setCurrentRoute={this.setCurrentRoute} page={"notReady"} text={"Click to Start!"}/>
           <div>
-            <Challenges updateGameType={this.updateGameType}/>
+            <Challenges updateGameType={this.updateGameType} gameType={this.state.gameType}/>
           </div>
         </div>
       );

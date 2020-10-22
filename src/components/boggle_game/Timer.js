@@ -6,7 +6,7 @@ export class Timer extends Component {
     constructor() {
         super();
         this.state = {
-            clock: 5 // in seconds (3 minutes)
+            clock: 180 // in seconds (3 minutes)
         };
     }
 

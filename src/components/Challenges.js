@@ -19,13 +19,31 @@ export class Challenges extends Component {
             currentComponent.setState({challenges: currentComponent.state.challenges.concat(challengeObject)});
         });
     }
+
+    // make sure checked always reads from state
+    componentDidUpdate() {
+        const gameType = this.props.gameType.gameType;
+        if (gameType === "random") {
+            document.getElementById("random").checked = true;
+        } else {
+            const id = this.props.gameType.challengeID;
+            const elements = document.getElementsByName("board");
+            for (var i = 0; i < elements.length; i++) {
+                const challenge = elements[i];
+                if (challenge.dataset.id === id) {
+                    challenge.checked = true;
+                    break;
+                }
+            }
+        }
+    }
     
     // Display all challenges
     render() {
         return (
             <div>
                 <br></br>
-                <label>Random Grid <input type="radio" name="board" className="radio" onChange={() => this.props.updateGameType("random")} defaultChecked/>
+                <label>Random Grid <input type="radio" id="random" name="board" className="radio" onChange={() => this.props.updateGameType("random")} />
                 </label>
                 <br></br>
                 <h3>Challenges</h3>

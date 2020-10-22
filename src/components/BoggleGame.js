@@ -23,6 +23,7 @@ class BoggleGame extends Component {
           remainingWords: [],
           userGuess: "",
           points: 0,
+          rankChanged: false,
         };
     }
 
@@ -78,6 +79,7 @@ class BoggleGame extends Component {
             // find the minimum score and try to replace. sort, reverse, set
             const minPoints = highscoresForChallenge[2].points; // only 3 appear in leaderboard and it is sorted in descending order
             if (minPoints < this.state.points) {
+                this.setState({rankChanged: true});
                 highscoresForChallenge.pop(); // delete min number of challenges
                 const data = {name: this.props.user.email, points: this.state.points}
                 highscoresForChallenge.push(data);
@@ -167,9 +169,10 @@ class BoggleGame extends Component {
                     <h1>Done!</h1>
                     <Button text={"Play again?"} page={"home"} setCurrentRoute={this.props.setCurrentRoute}/>
                     <br></br>
+                    {(this.state.rankChanged) ? <h2 style={{color: "green"}}>You've made the leaderboard!</h2> : <div></div>}
                     <h5>{this.state.points} points</h5>
                     <div style={endGameStyle}>
-                        <FoundWords foundWords={this.state.remainingWords}/>
+                        {(this.props.gameType.gameType === "challenge") ? <h3>Available Words do not display for challenge boards!</h3> : <FoundWords foundWords={this.state.remainingWords}/>}
                         <Board board={this.state.board}/>
                     </div>
                 </div>

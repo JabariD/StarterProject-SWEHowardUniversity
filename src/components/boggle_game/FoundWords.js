@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function FoundWords({foundWords}) {
-    const words = foundWords.map((word, index) =>
+    const words = foundWords.sort().map((word, index) =>
         <li key={index}>{word}</li>
     );
     return (
