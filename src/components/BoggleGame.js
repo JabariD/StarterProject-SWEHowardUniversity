@@ -35,7 +35,7 @@ class BoggleGame extends Component {
     getBoardAndDictionaryForBoard = async() => {
         // Check if board is random
         let board = [];
-        if (this.props.gameType.gameType === "random") {
+        if (this.props.gameType.gameType === "random" || !this.props.user) {
             board = RandomGrid();
         } else {
             // load challenge board
